@@ -77,6 +77,7 @@ class Client(object):
 
     def close_connection(self):
         self.socket.close()
+        print("zamknieto polaczenia")
 
 
 new_client = Client()

@@ -78,13 +78,16 @@ class Server(object):
         print("serwer serializuje tablice")
         self.connection.send(serialized_board)
         print("serwer wysyla tablice")
+        return True
 
     def second_user_move_receive_board(self):
-        while 1:
-            serialized_board = self.connection.recv(self.BUFFER_SIZE)
-            if not serialized_board: break
-            print("otrzymalem dane")
-            self.board = functions.deserialization(serialized_board)
+        # while 1:
+        serialized_board = self.connection.recv(self.BUFFER_SIZE)
+            # if not serialized_board: break
+        print("otrzymalem dane")
+        self.board = functions.deserialization(serialized_board)
+        print(self.board)
+        return True
         # self.winning_condition_increment(field, -1)     #help ??
 
     @staticmethod
@@ -138,10 +141,10 @@ class Server(object):
                     counter += 1
                     print("wykonao pierwszy ruch")
             else:
-                self.second_user_move_send_board()
-                print("wyslalam spakowane dane")
-                self.second_user_move_receive_board()
-                counter += 1
+                if self.second_user_move_send_board():
+                    print("wyslalam spakowane dane")
+                    self.second_user_move_receive_board()
+                    counter += 1
         if not self.winning_flag:
             print("It's a draw!")
         print("Thanks for playing!")
