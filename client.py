@@ -19,16 +19,27 @@ class Client(object):
     def connect(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((self.TCP_IP, self.TCP_PORT))
-        print("polaczono")
 
     def print_board(self):
         for field in range(9):
             if field%3 == 0:
                 print("\n-----------")
-            # print(" %c " % self.board[field], end = '')
-            # if (field+1)%3 != 0:
-                # print("|", end = '')
-        # print("\n-----------")
+            print(" %c " % self.board[field], end = '')
+            if (field+1)%3 != 0:
+                print("|", end = '')
+        print("\n-----------")
+
+    @staticmethod
+    def mock_board():
+        print("How to play:\n", "Choose where do you want to play your dot or cross,\n",
+              "by typing a number corresponding to the field below")
+        for field in range(9):
+            if field % 3 == 0:
+                print("\n-----------")
+            print(" " + str(field) + " ", end='')
+            if (field + 1) % 3 != 0:
+                print("|", end='')
+        print("\n-----------")
 
     def check_if_given_field_correct(self, field):
         if isinstance(field, int):
@@ -42,25 +53,20 @@ class Client(object):
                     return False
             else:
                 print("Bad number, use a number from range 0-8 to make a move. For reference:")
-                # server.Server.mock_board()
+                self.mock_board()
                 return False
         else:
             print("Bad value, you have to use integer. Use a number from range 0-8 to make a move. For reference:")
-            # server.Server.mock_board()
+            self.mock_board()
             return False
 
     def receive_date(self):
         serialized_board = self.socket.recv(self.BUFFER_SIZE)
-        print("odebralem")
-        if not serialized_board:
-            print("odebrane zle dane")
         self.board = functions.deserialization(serialized_board)
-        print("rozpakowalem")
-        print(self.board)
+        self.print_board()
         return True
 
     def move(self):
-        print("zaczynam move")
         while 1:
             try:
                 field = int(input("Second player's move. Choose a spot using numbers 0-8:   "))
@@ -68,7 +74,7 @@ class Client(object):
                     print("Try again")
                 else:
                     self.board[field] = "X"
-                    print("wybrano pole", self.board)
+                    self.print_board()
                     break
             except ValueError:
                 print("You can give only integer value.")
@@ -77,13 +83,3 @@ class Client(object):
 
     def close_connection(self):
         self.socket.close()
-        print("zamknieto polaczenia")
-
-
-new_client = Client()
-new_client.connect()
-while new_client.receive_date():
-    new_client.move()
-
-new_client.close_connection()
-

@@ -31,7 +31,6 @@ class Server(object):
         self.socket.bind((self.TCP_IP, self.TCP_PORT))
         self.socket.listen(1)
         self.connection, self.address = self.socket.accept()
-        print("polaczono")
 
     def winning_condition_increment(self, field, increment_value):
         """method used to assert how close players are to winning"""
@@ -75,18 +74,13 @@ class Server(object):
 
     def second_user_move_send_board(self):
         serialized_board = functions.serialization(self.board)
-        print("serwer serializuje tablice")
         self.connection.send(serialized_board)
-        print("serwer wysyla tablice")
         return True
 
     def second_user_move_receive_board(self):
-        # while 1:
         serialized_board = self.connection.recv(self.BUFFER_SIZE)
-            # if not serialized_board: break
-        print("otrzymalem dane")
         self.board = functions.deserialization(serialized_board)
-        print(self.board)
+        self.print_board()
         return True
         # self.winning_condition_increment(field, -1)     #help ??
 
@@ -95,10 +89,10 @@ class Server(object):
         for field in range(9):
             if field % 3 == 0:
                 print("\n-----------")
-        #     print(" %c " % self.board[field], end='')
-        #     if (field + 1) % 3 != 0:
-        #         print("|", end='')
-        # print("\n-----------")
+            print(" %c " % self.board[field], end='')
+            if (field + 1) % 3 != 0:
+                print("|", end='')
+        print("\n-----------")
 
     @staticmethod
     def mock_board():
@@ -107,10 +101,10 @@ class Server(object):
         for field in range(9):
             if field % 3 == 0:
                 print("\n-----------")
-        #     print(" " + str(field) + " ", end='')
-        #     if (field + 1) % 3 != 0:
-        #         print("|", end='')
-        # print("\n-----------")
+            print(" " + str(field) + " ", end='')
+            if (field + 1) % 3 != 0:
+                print("|", end='')
+        print("\n-----------")
 
     def winning_condition_check(self):
         """method that checks winning conditions for both players"""
@@ -132,25 +126,17 @@ class Server(object):
         Server.mock_board()
         print("New game started!")
         self.print_board(self)
-        #first_player_play = True
         # self.winning_condition_check()
         while counter != 9:
             if counter%2==0:
                 if self.first_user_move():
                     self.print_board(self)
                     counter += 1
-                    print("wykonao pierwszy ruch")
             else:
                 if self.second_user_move_send_board():
-                    print("wyslalam spakowane dane")
                     self.second_user_move_receive_board()
                     counter += 1
         if not self.winning_flag:
             print("It's a draw!")
         print("Thanks for playing!")
 
-
-new_server = Server()
-new_server.connection()
-new_server.game()
-new_server.close_connection()
