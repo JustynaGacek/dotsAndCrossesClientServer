@@ -7,6 +7,7 @@ import basic
 
 
 class Client(basic.Basic):
+
     TCP_PORT = 5011    #numer portu
     BUFFER_SIZE = 512
     socket = 0
