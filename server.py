@@ -16,7 +16,7 @@ class Server(basic.Basic):
     winning_flag = 0
 
 
-    TCP_PORT = 5005  # numer portu
+    TCP_PORT = 5009  # numer portu
     BUFFER_SIZE = 32
     socket = 0
     connection = 0
@@ -27,14 +27,14 @@ class Server(basic.Basic):
             self.board.append(' ')
 
     def connection(self, ip):
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.bind((ip, self.TCP_PORT))
-            self.socket.listen(1)
-            self.connection, self.address = self.socket.accept()
-        except OSError:
-            print("Problems with connection. Check ip and try again")
-            return False
+        #try:
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind((ip, self.TCP_PORT))
+        self.socket.listen(1)
+        self.connection, self.address = self.socket.accept()
+        #except OSError:
+         #   print("Problems with connection. Check ip and try again")
+          #  return False
         return True
 
     def winning_condition_increment(self, field, increment_value):
@@ -97,6 +97,7 @@ class Server(basic.Basic):
             if counter % 2 == 0:
                 if self.first_user_move():
                     self.print_board()
+                    print("Second player is making a move, please wait for your turn.")
                     counter += 1
             else:
                 if self.second_user_move_send_board():

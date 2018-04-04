@@ -8,7 +8,7 @@ import basic
 
 class Client(basic.Basic):
 
-    TCP_PORT = 5005    #numer portu
+    TCP_PORT = 5009    #numer portu
     BUFFER_SIZE = 512
     socket = 0
 
@@ -41,7 +41,7 @@ class Client(basic.Basic):
             try:
                 field = int(input("Second player's move. Choose a spot using numbers 0-8:   "))
                 if not self.check_if_given_field_correct(field):
-                    print("Try again")
+                    print("Incorrect input. Only integers form 0 to 8 are valid.")
                 else:
                     self.board[field] = "X"
                     self.print_board()
