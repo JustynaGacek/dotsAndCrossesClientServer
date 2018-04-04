@@ -10,7 +10,7 @@ class Client(basic.Basic):
 
     TCP_PORT = 5011    #numer portu
     BUFFER_SIZE = 512
-    board = []
+
 
     socket = 0
 
