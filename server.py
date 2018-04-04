@@ -4,12 +4,12 @@
 import math
 import socket
 import functions
+import basic
 
 
-class Server(object):
+class Server(basic.Basic):
     """ class representing the game of a dots and crosses """
 
-    board = []
     rows = [0, 0, 0]
     columns = [0, 0, 0]
     diagonals = [0, 0]
@@ -17,6 +17,7 @@ class Server(object):
 
     TCP_PORT = 5005  # numer portu
     BUFFER_SIZE = 512
+
     socket = 0
     connection = 0
     address = 0
@@ -39,25 +40,6 @@ class Server(object):
             self.diagonals[0] += increment_value
         if field in {2, 4, 6}:
             self.diagonals[1] += increment_value
-
-    def check_if_given_field_correct(self, field):
-        if isinstance(field, int):
-            int(field)
-            if 0 <= field <= 8:
-                if self.board[field] == ' ':
-                    print("Your choice was saved.")
-                    return True
-                else:
-                    print("This field is already occupied. Please choose another free value.")
-                    return False
-            else:
-                print("Bad number, use a number from range 0-8 to make a move. For reference:")
-                Server.mock_board()
-                return False
-        else:
-            print("Bad value, you have to use integer. Use a number from range 0-8 to make a move. For reference:")
-            Server.mock_board()
-            return False
 
     def first_user_move(self):
         try:
@@ -83,28 +65,6 @@ class Server(object):
         return True
         # self.winning_condition_increment(field, -1)     #help ??
 
-    @staticmethod
-    def print_board(self):
-        for field in range(9):
-            if field % 3 == 0:
-                print("\n-----------")
-            print(" %c " % self.board[field], end='')
-            if (field + 1) % 3 != 0:
-                print("|", end='')
-        print("\n-----------")
-
-    @staticmethod
-    def mock_board():
-        print("How to play:\n", "Choose where do you want to play your dot or cross,\n",
-              "by typing a number corresponding to the field below")
-        for field in range(9):
-            if field % 3 == 0:
-                print("\n-----------")
-            print(" " + str(field) + " ", end='')
-            if (field + 1) % 3 != 0:
-                print("|", end='')
-        print("\n-----------")
-
     def winning_condition_check(self):
         """method that checks winning conditions for both players"""
         if -3 in self.rows or -3 in self.columns or -3 in self.diagonals:
@@ -124,12 +84,12 @@ class Server(object):
         counter = 0
         Server.mock_board()
         print("New game started!")
-        self.print_board(self)
+        self.print_board()
         # self.winning_condition_check()
         while counter != 9:
             if counter%2==0:
                 if self.first_user_move():
-                    self.print_board(self)
+                    self.print_board()
                     counter += 1
             else:
                 if self.second_user_move_send_board():
