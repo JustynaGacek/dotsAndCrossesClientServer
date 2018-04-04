@@ -8,11 +8,8 @@ import basic
 
 class Client(basic.Basic):
 
-    TCP_PORT = 5011    #numer portu
+    TCP_PORT = 5005    #numer portu
     BUFFER_SIZE = 512
-
-
-
     socket = 0
 
     def __init__(self):
@@ -20,12 +17,22 @@ class Client(basic.Basic):
             self.board.append(' ')
 
     def connect(self, ip):
+        #try:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((ip, self.TCP_PORT))
+        #except OSError:
+            #print("Connection problems. Check ip then try again.")
+            #print(OSError.__cause__)
+            #return False
+        return True
 
-    def receive_date(self):
+    def receive_data(self):
         serialized_board = self.socket.recv(self.BUFFER_SIZE)
         self.board = functions.deserialization(serialized_board)
+        if self.board == "You lost." or self.board == "You won!":
+            print(self.board, "Thanks for playing!")
+            self.close_connection()
+            return False
         self.print_board()
         return True
 
@@ -40,9 +47,9 @@ class Client(basic.Basic):
                     self.print_board()
                     break
             except ValueError:
-                print("You can give only integer value.")
-        serialized_board = functions.serialization(self.board)
-        self.socket.send(serialized_board)
+                print("You can only input integer value.")
+        serialized_field = functions.serialization(field)
+        self.socket.send(serialized_field)
 
     def close_connection(self):
         self.socket.close()

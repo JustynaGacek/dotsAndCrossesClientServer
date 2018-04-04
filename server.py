@@ -17,7 +17,7 @@ class Server(basic.Basic):
 
 
     TCP_PORT = 5005  # numer portu
-    BUFFER_SIZE = 512
+    BUFFER_SIZE = 32
     socket = 0
     connection = 0
     address = 0
@@ -27,10 +27,15 @@ class Server(basic.Basic):
             self.board.append(' ')
 
     def connection(self, ip):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind((ip, self.TCP_PORT))
-        self.socket.listen(1)
-        self.connection, self.address = self.socket.accept()
+        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.bind((ip, self.TCP_PORT))
+            self.socket.listen(1)
+            self.connection, self.address = self.socket.accept()
+        except OSError:
+            print("Problems with connection. Check ip and try again")
+            return False
+        return True
 
     def winning_condition_increment(self, field, increment_value):
         """method used to assert how close players are to winning"""
@@ -46,12 +51,12 @@ class Server(basic.Basic):
             field = int(input("First player's move. Choose a spot using numbers 0-8:   "))
             if self.check_if_given_field_correct(field):
                 self.board[field] = "O"
-                # self.winning_condition_increment(field, -1)
+                self.winning_condition_increment(field, -1)
                 return True
             else:
                 return False
         except ValueError:
-            print("You can give only integer value.")
+            print("Only integers from 0 to 8 are valid.")
 
     def second_user_move_send_board(self):
         serialized_board = functions.serialization(self.board)
@@ -59,20 +64,23 @@ class Server(basic.Basic):
         return True
 
     def second_user_move_receive_board(self):
-        serialized_board = self.connection.recv(self.BUFFER_SIZE)
-        self.board = functions.deserialization(serialized_board)
+        field = self.connection.recv(self.BUFFER_SIZE)
+        field = functions.deserialization(field)
+        self.board[field] = "X"
         self.print_board()
+        self.winning_condition_increment(field, 1)
         return True
-        # self.winning_condition_increment(field, -1)     #help ??
 
     def winning_condition_check(self):
         """method that checks winning conditions for both players"""
         if -3 in self.rows or -3 in self.columns or -3 in self.diagonals:
             print("Player one(O) won!")
+            self.connection.send(functions.serialization("You lost."))
             self.winning_flag = 1
             return False
         if 3 in self.rows or 3 in self.columns or 3 in self.diagonals:
             print("Player two(X) won!")
+            self.connection.send(functions.serialization("You won!"))
             self.winning_flag = 1
             return False
         return True
@@ -85,9 +93,8 @@ class Server(basic.Basic):
         Server.mock_board()
         print("New game started!")
         self.print_board()
-        # self.winning_condition_check()
-        while counter != 9:
-            if counter%2==0:
+        while counter != 9 and self.winning_condition_check():
+            if counter % 2 == 0:
                 if self.first_user_move():
                     self.print_board()
                     counter += 1
