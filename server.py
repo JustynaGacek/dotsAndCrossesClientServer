@@ -15,9 +15,8 @@ class Server(object):
     diagonals = [0, 0]
     winning_flag = 0
 
-    TCP_IP = "127.0.0.1"  # host
     TCP_PORT = 5005  # numer portu
-    BUFFER_SIZE = 1024
+    BUFFER_SIZE = 512
     socket = 0
     connection = 0
     address = 0
@@ -26,9 +25,9 @@ class Server(object):
         for field in range(9):
             self.board.append(' ')
 
-    def connection(self):
+    def connection(self, ip):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind((self.TCP_IP, self.TCP_PORT))
+        self.socket.bind((ip, self.TCP_PORT))
         self.socket.listen(1)
         self.connection, self.address = self.socket.accept()
 

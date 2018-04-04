@@ -6,9 +6,8 @@ import functions
 
 
 class Client(object):
-    TCP_IP = "127.0.0.1"    #host
     TCP_PORT = 5005     #numer portu
-    BUFFER_SIZE = 1024
+    BUFFER_SIZE = 512
     board = []
     socket = 0
 
@@ -16,9 +15,9 @@ class Client(object):
         for field in range(9):
             self.board.append(' ')
 
-    def connect(self):
+    def connect(self, ip):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((self.TCP_IP, self.TCP_PORT))
+        self.socket.connect((ip, self.TCP_PORT))
 
     def print_board(self):
         for field in range(9):
