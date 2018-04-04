@@ -15,9 +15,9 @@ class Server(basic.Basic):
     diagonals = [0, 0]
     winning_flag = 0
 
+
     TCP_PORT = 5005  # numer portu
     BUFFER_SIZE = 512
-
     socket = 0
     connection = 0
     address = 0
