@@ -17,19 +17,20 @@ class Client(basic.Basic):
             self.board.append(' ')
 
     def connect(self, ip):
-        #try:
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((ip, self.TCP_PORT))
-        #except OSError:
-            #print("Connection problems. Check ip then try again.")
-            #print(OSError.__cause__)
-            #return False
+        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect((ip, self.TCP_PORT))
+        except OSError:
+            print("Connection problems. Check ip then try again.")
+            print(OSError.__cause__)
+            return False
         return True
 
     def receive_data(self):
         serialized_board = self.socket.recv(self.BUFFER_SIZE)
         self.board = functions.deserialization(serialized_board)
         if self.board == "You lost." or self.board == "You won!":
+            self.print_board()
             print(self.board, "Thanks for playing!")
             self.close_connection()
             return False
@@ -47,7 +48,7 @@ class Client(basic.Basic):
                     self.print_board()
                     break
             except ValueError:
-                print("You can only input integer value.")
+                print("You can only input integer value ranging from 0 to 8.")
                 self.mock_board()
         serialized_field = functions.serialization(field)
         self.socket.send(serialized_field)

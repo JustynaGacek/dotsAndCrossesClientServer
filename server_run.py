@@ -1,7 +1,9 @@
 import server
+import time
+
 
 new_server = server.Server()
-ip = input("Please input guest IP: ")
-if new_server.connection(ip):
+if new_server.connection():
     new_server.game()
+    time.sleep(5)
     new_server.close_connection()
