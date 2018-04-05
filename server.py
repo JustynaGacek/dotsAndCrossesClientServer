@@ -30,6 +30,7 @@ class Server(basic.Basic):
         #try:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((ip, self.TCP_PORT))
+        print("Connection established. Waiting for second player to connect to you.")
         self.socket.listen(1)
         self.connection, self.address = self.socket.accept()
         #except OSError:
@@ -48,7 +49,7 @@ class Server(basic.Basic):
 
     def first_user_move(self):
         try:
-            field = int(input("First player's move. Choose a spot using numbers 0-8:   "))
+            field = int(input("Your turn. Choose a spot using numbers 0-8:   "))
             if self.check_if_given_field_correct(field):
                 self.board[field] = "O"
                 self.winning_condition_increment(field, -1)
@@ -57,6 +58,7 @@ class Server(basic.Basic):
                 return False
         except ValueError:
             print("Only integers from 0 to 8 are valid.")
+            self.mock_board()
 
     def second_user_move_send_board(self):
         serialized_board = functions.serialization(self.board)

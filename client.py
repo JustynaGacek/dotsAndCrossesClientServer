@@ -39,7 +39,7 @@ class Client(basic.Basic):
     def move(self):
         while 1:
             try:
-                field = int(input("Second player's move. Choose a spot using numbers 0-8:   "))
+                field = int(input("Your turn. Choose a spot using numbers 0-8:   "))
                 if not self.check_if_given_field_correct(field):
                     print("Incorrect input. Only integers form 0 to 8 are valid.")
                 else:
@@ -48,6 +48,7 @@ class Client(basic.Basic):
                     break
             except ValueError:
                 print("You can only input integer value.")
+                self.mock_board()
         serialized_field = functions.serialization(field)
         self.socket.send(serialized_field)
 
