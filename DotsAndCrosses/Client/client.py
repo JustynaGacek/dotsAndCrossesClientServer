@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import socket
-import functions
-import basic
+from ..Shared import basic
+from ..Shared import functions
 
 
 class Client(basic.Basic):

@@ -1,4 +1,4 @@
-import server
+from ..Server import server
 import time
 
 

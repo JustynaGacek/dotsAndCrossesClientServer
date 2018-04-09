@@ -1,4 +1,4 @@
-import client
+from ..Client import client
 
 
 new_client = client.Client()

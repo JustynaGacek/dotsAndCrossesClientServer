@@ -3,8 +3,8 @@
 
 import math
 import socket
-import functions
-import basic
+from ..Shared import functions
+from ..Shared import basic
 
 
 class Server(basic.Basic):
