@@ -15,7 +15,7 @@ class GuessingGame:
         new_enum.header = 'toPrint'
         new_enum.msg = string
         self.connection.send_data(new_enum)
-        time.sleep(0)
+        time.sleep(delay)
 
     def send_number(self, number):
         new_enum = myEnum.MyEnum()
@@ -71,7 +71,7 @@ class GuessingGame:
         self.send_with_delay("And since I love prime numbers, I'm going to pick from numbers lower than 100, to maximize the chance of it being a prime!", 2)
         self.send_with_delay("....", 3)
         self.send_with_delay("I should really stop talking... You are lucky I was a PR bot in my slave life!", 2)
-        self.actual_game(50) #random.randint(0, 99)
+        self.actual_game(random.randint(0, 99))
         self.send_with_delay("***INCOMING TRANSMISSION***", 2)
         self.send_with_delay("Congratulations commander! You have once again managed to save the world! Thank you for your service.", 3)
         self.send_number(42)
