@@ -21,7 +21,6 @@ class Client(basic.Basic):
             self.socket.connect((ip, self.TCP_PORT))
         except OSError:
             print("Connection problems. Check ip then try again.")
-            print(OSError.__cause__)
             return False
         return True
 

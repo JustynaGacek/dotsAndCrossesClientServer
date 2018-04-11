@@ -26,18 +26,6 @@ class Server(basic.Basic):
         for field in range(9):
             self.board.append(' ')
 
-    def connection(self):
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.bind(('', self.TCP_PORT))
-            print("Server is online. Waiting for a player to connect to you. (You have to give them your IP!)")
-            self.socket.listen(1)
-            self.connection, self.address = self.socket.accept()
-        except OSError:
-            print("Problems with connection.")
-            return False
-        return True
-
     def winning_condition_increment(self, field, increment_value):
         """method used to assert how close players are to winning"""
         self.rows[math.floor(field / 3)] += increment_value
