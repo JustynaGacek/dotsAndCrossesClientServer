@@ -3,7 +3,7 @@
 
 import math
 import socket
-from ..Shared import functions
+from TCP.serialization import *
 from ..Shared import basic
 
 
@@ -49,13 +49,13 @@ class Server(basic.Basic):
             self.mock_board()
 
     def second_user_move_send_board(self):
-        serialized_board = functions.serialization(self.board)
+        serialized_board = serialize(self.board)
         self.connection.send(serialized_board)
         return True
 
     def second_user_move_receive_board(self):
         field = self.connection.recv(self.BUFFER_SIZE)
-        field = functions.deserialization(field)
+        field = deserialization(field)
         self.board[field] = "X"
         self.print_board()
         self.winning_condition_increment(field, 1)
@@ -65,18 +65,15 @@ class Server(basic.Basic):
         """method that checks winning conditions for both players"""
         if -3 in self.rows or -3 in self.columns or -3 in self.diagonals:
             print("Player one(O) won!")
-            self.connection.send(functions.serialization("You lost."))
+            self.connection.send(serialize("You lost."))
             self.winning_flag = 1
             return False
         if 3 in self.rows or 3 in self.columns or 3 in self.diagonals:
             print("Player two(X) won!")
-            self.connection.send(functions.serialization("You won!"))
+            self.connection.send(serialize("You won!"))
             self.winning_flag = 1
             return False
         return True
-
-    def close_connection(self):
-        self.socket.close()
 
     def game(self):
         counter = 0

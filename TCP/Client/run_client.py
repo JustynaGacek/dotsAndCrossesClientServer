@@ -1,9 +1,9 @@
-from TCP.Client.client import Client
+from TCP.Client import client
 from TCP.myEnum import MyEnum
 
 
 dots = ''
-new_client = Client()
+new_client = client.Client()
 data = ''
 game_type = 0
 new_enum = MyEnum()

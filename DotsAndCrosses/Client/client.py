@@ -15,15 +15,6 @@ class Client(basic.Basic):
         for field in range(9):
             self.board.append(' ')
 
-    def connect(self, ip):
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect((ip, self.TCP_PORT))
-        except OSError:
-            print("Connection problems. Check ip then try again.")
-            return False
-        return True
-
     def receive_data(self):
         serialized_board = self.socket.recv(self.BUFFER_SIZE)
         self.board = functions.deserialization(serialized_board)
@@ -51,5 +42,3 @@ class Client(basic.Basic):
         serialized_field = functions.serialization(field)
         self.socket.send(serialized_field)
 
-    def close_connection(self):
-        self.socket.close()
