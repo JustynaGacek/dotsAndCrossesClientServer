@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import socket
 from ..Shared import basic
-from ..Shared import functions
+from TCP.serialization import *
 
 
 class Client(basic.Basic):
@@ -11,14 +10,22 @@ class Client(basic.Basic):
     BUFFER_SIZE = 512
     socket = 0
 
-    def __init__(self):
+    def __init__(self, socket):
         for field in range(9):
             self.board.append(' ')
+        self.socket = socket
 
     def receive_data(self):
-        serialized_board = self.socket.recv(self.BUFFER_SIZE)
-        self.board = functions.deserialization(serialized_board)
-        if self.board == "You lost." or self.board == "You won!":
+        serialized_board = self.socket.recieve_data(self.BUFFER_SIZE)
+        self.board = deserialization(serialized_board)
+        for field in range(9):
+            if field%3 == 0:
+                print("\n-----------")
+            print(" %c " % self.board[field], end = '')
+            if (field+1)%3 != 0:
+                print("|", end = '')
+        print("\n-----------")
+        if self.board.msg == "You lost." or self.board.msg == "You won!":
             self.print_board()
             print(self.board, "Thanks for playing!")
             self.close_connection()
@@ -39,6 +46,6 @@ class Client(basic.Basic):
             except ValueError:
                 print("You can only input integer value ranging from 0 to 8.")
                 self.mock_board()
-        serialized_field = functions.serialization(field)
+        serialized_field = serialize(field)
         self.socket.send(serialized_field)
 

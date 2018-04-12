@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import math
-import socket
+from TCP import myEnum
 from TCP.serialization import *
 from ..Shared import basic
+from TCP.Server.server import Server
 
 
 class Server(basic.Basic):
@@ -18,13 +19,24 @@ class Server(basic.Basic):
 
     TCP_PORT = 5009  # numer portu
     BUFFER_SIZE = 32
-    socket = 0
     connection = 0
-    address = 0
 
-    def __init__(self):
+    def __init__(self, connection):
         for field in range(9):
             self.board.append(' ')
+        self.connection = connection
+
+    def send_data_to_print(self, data):
+        new_enum = myEnum.MyEnum()
+        new_enum.header = "toPrint"
+        new_enum.msg = data
+        self.connection.send_data(new_enum)
+
+    def send_info(self, data):
+        new_enum = myEnum.MyEnum()
+        new_enum.header = "number"
+        new_enum.msg = data
+        self.connection.send_data(new_enum)
 
     def winning_condition_increment(self, field, increment_value):
         """method used to assert how close players are to winning"""
@@ -49,28 +61,29 @@ class Server(basic.Basic):
             self.mock_board()
 
     def second_user_move_send_board(self):
-        serialized_board = serialize(self.board)
-        self.connection.send(serialized_board)
+        self.send_info(2)
+        self.send_info(self.board)
         return True
 
     def second_user_move_receive_board(self):
-        field = self.connection.recv(self.BUFFER_SIZE)
-        field = deserialization(field)
-        self.board[field] = "X"
-        self.print_board()
-        self.winning_condition_increment(field, 1)
-        return True
+        data = self.connection.receive_data()
+        field = data
+        if field != '':
+            field = int(field)
+            self.board[field] = "X"
+            self.print_board()
+            self.winning_condition_increment(field, 1)
 
     def winning_condition_check(self):
         """method that checks winning conditions for both players"""
         if -3 in self.rows or -3 in self.columns or -3 in self.diagonals:
             print("Player one(O) won!")
-            self.connection.send(serialize("You lost."))
+            self.send_data_to_print("You lost")
             self.winning_flag = 1
             return False
         if 3 in self.rows or 3 in self.columns or 3 in self.diagonals:
             print("Player two(X) won!")
-            self.connection.send(serialize("You won!"))
+            self.send_data_to_print("You won")
             self.winning_flag = 1
             return False
         return True
@@ -79,6 +92,7 @@ class Server(basic.Basic):
         counter = 0
         Server.mock_board()
         print("New game started!")
+        self.send_data_to_print("Game started! Please wait for your turn")
         self.print_board()
         while counter != 9 and self.winning_condition_check():
             if counter % 2 == 0:
@@ -88,9 +102,12 @@ class Server(basic.Basic):
                     counter += 1
             else:
                 if self.second_user_move_send_board():
+                    self.send_info(1)
                     self.second_user_move_receive_board()
                     counter += 1
         if not self.winning_flag:
             print("It's a draw!")
         print("Thanks for playing!")
+        self.send_data_to_print("Thanks for playing!")
+        self.send_info(42)
 

@@ -2,6 +2,23 @@ from TCP.Client import client
 from TCP.myEnum import MyEnum
 
 
+def end_transmisson(number):
+    if number == 42:
+        return False
+    else:
+        return True
+
+
+def print_board(board):
+    for field in range(9):
+        if field % 3 == 0:
+            print("\n-----------")
+        print(" %c " % board[field], end='')
+        if (field + 1) % 3 != 0:
+            print("|", end='')
+    print("\n-----------")
+
+check = False
 dots = ''
 new_client = client.Client()
 data = ''
@@ -26,21 +43,32 @@ if new_client.connect(ip):
         new_enum.header = 'number'
         new_enum.msg = "DaC"
         new_client.send_data(new_enum)
+        while end_transmisson(data):
+            data = new_client.receive_data()
+            if data == 1:
+                new_enum.header = 'number'
+                new_enum.msg = input("Your move. Choose an empty field: ")
+                new_client.send_data(new_enum)
+            if check:
+                print_board(data)
+                check = False
+            if data == 2:
+                check = True
 
     elif game_type == 2:
         new_enum.header = "number"
         new_enum.msg = "GG"
         new_client.send_data(new_enum)
-        while not data == 42:
+        while end_transmisson(data):
             data = new_client.receive_data()
             if data == 1:
                 new_enum.header = 'number'
                 new_enum.msg = input("Well then, go ahead and try to guess! ")
                 new_client.send_data(new_enum)
-                data = ''
             if data == 2:
                 new_enum.header = 'number'
                 new_enum.msg = input("Delete the Evil Neural Network, that is trying to destroy the world? (y/n): ")
                 new_client.send_data(new_enum)
-                data = ''
-        new_client.close_connection()
+    else:
+        print("This shouldn't happen, this game doesn't exist...")
+    new_client.close_connection()

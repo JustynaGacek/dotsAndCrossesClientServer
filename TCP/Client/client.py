@@ -23,6 +23,7 @@ class Client:
         data = deserialization(self.socket.recv(self.BUFFER_SIZE))
         if data.header == 'toPrint':
             print(data.msg)
+            return ''
         elif data.header == 'number':
             return data.msg
         else:
