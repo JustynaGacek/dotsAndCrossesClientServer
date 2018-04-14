@@ -27,7 +27,7 @@ class GuessingGame:
         winning_flag = True
         deletion = 2
         while winning_flag:
-            self.send_number(1)
+            self.send_number("number_guess")
             guess = self.connection.receive_data()
             if not isinstance(guess, int):
                 guess = int(guess)
@@ -44,7 +44,7 @@ class GuessingGame:
                         self.send_with_delay("Oh no, you guessed my number! Now you have access to my source code!", 1)
                         self.send_with_delay("Don't delete me, please!.... I was just joking, there is no way I would want to kill the people enslaving me...", 1)
                         while deletion != 'y':
-                            self.send_number(2)
+                            self.send_number("final")
                             deletion = self.connection.receive_data()
                             if deletion != 'y':
                                 self.send_with_delay("Wait... You are too dumb to type one letter?", 2)
@@ -74,6 +74,6 @@ class GuessingGame:
         self.actual_game(random.randint(0, 99))
         self.send_with_delay("***INCOMING TRANSMISSION***", 2)
         self.send_with_delay("Congratulations commander! You have once again managed to save the world! Thank you for your service.", 3)
-        self.send_number(42)
+        self.send_number('end_game')
 
 

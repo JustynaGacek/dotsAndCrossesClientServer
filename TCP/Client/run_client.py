@@ -2,8 +2,8 @@ from TCP.Client import client
 from TCP.myEnum import MyEnum
 
 
-def end_transmisson(number):
-    if number == 42:
+def end_transmisson(message):
+    if message == "end_game":
         return False
     else:
         return True
@@ -45,15 +45,24 @@ if new_client.connect(ip):
         new_client.send_data(new_enum)
         while end_transmisson(data):
             data = new_client.receive_data()
-            if data == 1:
+            if data == "input_required":
                 new_enum.header = 'number'
-                new_enum.msg = input("Your move. Choose an empty field: ")
+                Flag = True
+                while Flag:
+                    try:
+                        checker = int(input("Your move. Choose an empty field: "))
+                        Flag = False
+                    except ValueError:
+                        print("Wrong input. Choose a field from 0 to 8 that is still free")
+                        Flag = True
+                new_enum.msg = checker
                 new_client.send_data(new_enum)
             if check:
                 print_board(data)
                 check = False
-            if data == 2:
+            if data == 'board_next':
                 check = True
+        print("Game is finished, the app will now close.")
 
     elif game_type == 2:
         new_enum.header = "number"
@@ -61,14 +70,15 @@ if new_client.connect(ip):
         new_client.send_data(new_enum)
         while end_transmisson(data):
             data = new_client.receive_data()
-            if data == 1:
+            if data == "number_guess":
                 new_enum.header = 'number'
                 new_enum.msg = input("Well then, go ahead and try to guess! ")
                 new_client.send_data(new_enum)
-            if data == 2:
+            if data == "final":
                 new_enum.header = 'number'
                 new_enum.msg = input("Delete the Evil Neural Network, that is trying to destroy the world? (y/n): ")
                 new_client.send_data(new_enum)
+        print("Game is finished, the app will now close.")
     else:
         print("This shouldn't happen, this game doesn't exist...")
     new_client.close_connection()
