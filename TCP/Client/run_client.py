@@ -1,5 +1,7 @@
 from TCP.Client import client
 from TCP.myEnum import MyEnum
+from TCP.gameTypesEnum import GameTypesEnum
+from TCP.gameTypesEnum import NoSuchGame
 
 
 def end_transmisson(message):
@@ -17,6 +19,7 @@ def print_board(board):
         if (field + 1) % 3 != 0:
             print("|", end='')
     print("\n-----------")
+
 
 check = False
 dots = ''
@@ -39,7 +42,7 @@ if new_client.connect(ip):
             print("Only integers are valid.")
         if 0 < game_type < 3:
             break
-    if game_type == 1:
+    if game_type == GameTypesEnum.DotsAndCrosses:
         new_enum.header = 'number'
         new_enum.msg = "DaC"
         new_client.send_data(new_enum)
@@ -64,7 +67,7 @@ if new_client.connect(ip):
                 check = True
         print("Game is finished, the app will now close.")
 
-    elif game_type == 2:
+    elif game_type == GameTypesEnum.GuessingGame:
         new_enum.header = "number"
         new_enum.msg = "GG"
         new_client.send_data(new_enum)
@@ -80,5 +83,6 @@ if new_client.connect(ip):
                 new_client.send_data(new_enum)
         print("Game is finished, the app will now close.")
     else:
+        raise NoSuchGame(game_type)
         print("This shouldn't happen, this game doesn't exist...")
     new_client.close_connection()

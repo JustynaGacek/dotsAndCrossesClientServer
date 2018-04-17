@@ -13,12 +13,10 @@ class GameLogic:
     columns = [0, 0, 0]
     diagonals = [0, 0]
     winning_flag = 0
-    TCP_PORT = 5009  # numer portu
+
     BUFFER_SIZE = 32
     connection = 0
     board = []
-
-
 
     def __init__(self, connection):
         for field in range(9):
@@ -116,7 +114,6 @@ class GameLogic:
                 self.winning_condition_increment(field, 1)
                 break
             self.send_data_to_print("Please input a valid integer.")
-
 
     def winning_condition_check(self):
         """method that checks winning conditions for both players"""

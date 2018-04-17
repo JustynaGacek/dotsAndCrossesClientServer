@@ -4,7 +4,7 @@ from ..serialization import *
 
 class Server(object):
 
-    TCP_PORT = 5009  # numer portu
+    TCP_PORT = 5005  # numer portu
     connection = 0
     address = 0
     BUFFER_SIZE = 512

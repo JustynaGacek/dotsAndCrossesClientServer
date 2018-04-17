@@ -3,7 +3,7 @@ from ..serialization import *
 
 
 class Client:
-    TCP_PORT = 5009  # numer portu
+    TCP_PORT = 5005  # numer portu
     BUFFER_SIZE = 512
     socket = 0
 

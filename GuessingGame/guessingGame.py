@@ -17,21 +17,21 @@ class GuessingGame:
         self.connection.send_data(new_enum)
         time.sleep(delay)
 
-    def send_number(self, number):
+    def send_number(self, instruction):
         new_enum = myEnum.MyEnum()
         new_enum.header = 'number'
-        new_enum.msg = number
+        new_enum.msg = instruction
         self.connection.send_data(new_enum)
 
     def actual_game(self, the_number):
         winning_flag = True
-        deletion = 2
+        deletion = 0
         while winning_flag:
             self.send_number("number_guess")
             guess = self.connection.receive_data()
             if not isinstance(guess, int):
                 guess = int(guess)
-                if guess > 99:
+                if 99 < guess < 0:
                     self.send_with_delay("Why was I even worried about talking to you? I forgot humans are just stupid monkeys! Ahaha", 1)
                 else:
                     if guess > the_number:
