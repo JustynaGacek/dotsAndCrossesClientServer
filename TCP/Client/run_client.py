@@ -75,7 +75,7 @@ if new_client.connect(ip):
             data = new_client.receive_data()
             if data == "number_guess":
                 new_enum.header = 'number'
-                new_enum.msg = input("Well then, go ahead and try to guess! ")
+                new_enum.msg = int(input("Well then, go ahead and try to guess! "))
                 new_client.send_data(new_enum)
             if data == "final":
                 new_enum.header = 'number'
